@@ -4,13 +4,13 @@ from maze import Maze
 
 
 def main():
-      
+
 
     num_rows = 10
     num_cols = 14
-    margin = 50
-    screen_x = 800
-    screen_y = 600
+    margin = 150
+    screen_x = 1200
+    screen_y = 1000
     cell_size_x = (screen_x - (2 * margin)) / num_cols
     cell_size_y = (screen_y - (2 * margin)) / num_rows
 
