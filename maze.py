@@ -46,47 +46,41 @@ class Maze:
     def _break_walls_r(self, i, j):
         self._cells[i][j].visited = True
         while True:
-            to_visit_list = []
-            if 0 <= i - 1 < len(self._cells) and not self._cells[i - 1][j].visited:
-                to_visit_list.append(self._cells[i - 1][j])
-            if 0 <= i + 1 < len(self._cells) and not self._cells[i + 1][j].visited:
-                to_visit_list.append(self._cells[i + 1][j])
-            if 0 <= j - 1 < len(self._cells[0]) and not self._cells[i][j - 1].visited:
-                to_visit_list.append(self._cells[i][j - 1])
-            if 0 <= j + 1 < len(self._cells[0]) and not self._cells[i][j + 1].visited:
-                to_visit_list.append(self._cells[i][j + 1])
+            next_index_list = []
             
-            if len(to_visit_list) == 0:
+            # check adjacent cells and adds unvisited ones to the list
+            if 0 <= i - 1 and not self._cells[i - 1][j].visited:
+                next_index_list.append((i - 1, j))
+            if i + 1 < len(self._cells) and not self._cells[i + 1][j].visited:
+                next_index_list.append((i + 1, j))
+            if 0 <= j - 1 and not self._cells[i][j - 1].visited:
+                next_index_list.append((i, j - 1))
+            if j + 1 < len(self._cells[0]) and not self._cells[i][j + 1].visited:
+                next_index_list.append((i, j + 1))
+            
+            # break when every cell is visited
+            if len(next_index_list) == 0:
                 self._draw_cell(i, j)
                 break
 
-            to_visit = to_visit_list.pop(random.randrange(len(to_visit_list)))
-            if self._cells[i][j]._x1 == to_visit._x1:
-                if self._cells[i][j]._y1 < to_visit._y1:
-                    self._cells[i][j].has_bottom_wall = False
-                    self._draw_cell(i, j)
-                    to_visit.has_top_wall = False
-                    self._draw_cell(i, j + 1)
-                    self._break_walls_r(i, j + 1)
-                else:
-                    self._cells[i][j].has_top_wall = False
-                    self._draw_cell(i, j)
-                    to_visit.has_bottom_wall = False
-                    self._draw_cell(i, j - 1)
-                    self._break_walls_r(i, j - 1)
-            else:
-                if self._cells[i][j]._x1 < to_visit._x1:
-                    self._cells[i][j].has_right_wall = False
-                    self._draw_cell(i, j)
-                    to_visit.has_left_wall = False
-                    self._draw_cell(i + 1, j)
-                    self._break_walls_r(i + 1, j)
-                else:
-                    self._cells[i][j].has_left_wall = False
-                    self._draw_cell(i, j)
-                    to_visit.has_right_wall = False
-                    self._draw_cell(i - 1, j)
-                    self._break_walls_r(i - 1, j)
+            # randomly select next cell to visit
+            next_index = next_index_list.pop(random.randrange(len(next_index_list)))
+
+            # destroy wall between current and next cell
+            if next_index[0] == i + 1:
+                self._cells[i][j].has_right_wall = False
+                self._cells[i + 1][j].has_left_wall = False
+            if next_index[0] == i - 1:
+                self._cells[i][j].has_left_wall = False
+                self._cells[i - 1][j].has_right_wall = False
+            if next_index[1] == j + 1:
+                self._cells[i][j].has_bottom_wall = False
+                self._cells[i][j + 1].has_top_wall = False
+            if next_index[1] == j - 1:
+                self._cells[i][j].has_top_wall = False
+                self._cells[i][j - 1].has_bottom_wall = False
+
+            self._break_walls_r(next_index[0], next_index[1])
             
             
 
